@@ -15,8 +15,8 @@ top5_nodes = {node for node in sorted(G, key=G.degree, reverse=True)[:5]}
 big_nodes = {node[0] for node in G.degree() if node[1] > average_degree}
 other_nodes = set(G) - big_nodes
 
-min_weight = min(nx.get_edge_attributes(G, "weight").items(), key=lambda e: e[1])[1]
-max_weight = max(nx.get_edge_attributes(G, "weight").items(), key=lambda e: e[1])[1]
+min_weight = min(nx.get_edge_attributes(G, "weight").values())
+max_weight = max(nx.get_edge_attributes(G, "weight").values())
 
 nx.draw_networkx_nodes(
     G, pos=pos_spring, nodelist=big_nodes, node_size=800, node_color="green"
@@ -45,4 +45,5 @@ nx.draw_networkx_labels(
     font_weight="bold",
 )
 
+plt.savefig("1-2.png")
 plt.show()
