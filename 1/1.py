@@ -1,3 +1,4 @@
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -49,5 +50,10 @@ nx.draw_networkx_labels(
     font_weight="bold",
 )
 
-plt.savefig("1-2.png")
+plt.title("Course Network")
+green_patch = mpatches.Patch(color="green", label="Degree over average")
+purple_patch = mpatches.Patch(color="purple", label="Degree under average")
+plt.legend(handles=[green_patch, purple_patch])
+
+plt.savefig("course_network.png", dpi=300)
 plt.show()
