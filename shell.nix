@@ -10,5 +10,6 @@ pkgs.mkShell {
     python3Packages.scipy
 
     p7zip
+    zip
   ];
 }
