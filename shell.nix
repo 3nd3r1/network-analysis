@@ -8,5 +8,7 @@ pkgs.mkShell {
     python3Packages.numpy
     python3Packages.networkx
     python3Packages.scipy
+
+    p7zip
   ];
 }
