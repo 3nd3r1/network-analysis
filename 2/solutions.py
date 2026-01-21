@@ -15,19 +15,54 @@ G5 = nx.read_edgelist("data/p2p-Gnutella09.txt", create_using=nx.DiGraph())
 G6 = nx.read_edgelist("data/web-Google.txt", create_using=nx.DiGraph())
 
 graph_infos = [
-    {"title": "Barabasi-Albert Network (n=100, m=5)", "graph": G1},
-    {"title": "Watts-Strogatz Network (n=100, k=6, p=0.3)", "graph": G2},
-    {"title": "Erdos-Renyi Network (n=200, p=0.05)", "graph": G3},
-    {"title": "P2P Gnutella04 Network", "graph": G4},
-    {"title": "P2P Gnutella09 Network", "graph": G5},
-    {"title": "Web Google Network", "graph": G6},
+    {
+        "title": "Barabasi-Albert Network (n=100, m=5)",
+        "graph": G1,
+        "measure_caption": "We see a strong correlation, indicating that high degree nodes have high PageRank.",
+        "network_caption": "The network has a few large red nodes in the center. These nodes have high degree and high PageRank, confirming the correlation in Figure 1a.",
+    },
+    {
+        "title": "Watts-Strogatz Network (n=100, k=6, p=0.3)",
+        "graph": G2,
+        "measure_caption": "The horizontal bands appear because most nodes have the same degree, but their PageRank differs based on their neighbors.",
+        "network_caption": "There is not as much degree variance, but the PageRank varies more with red nodes scattered across the network. This shows that PageRank doesn't only depend on degree.",
+    },
+    {
+        "title": "Erdos-Renyi Network (n=200, p=0.05)",
+        "graph": G3,
+        "measure_caption": "We see a strong correlation since random edges make all links roughly equal in value.",
+        "network_caption": "Large red nodes are in the center while small blue nodes are on the edges. PageRank and degree match, confirming that degree and PageRank are correlated in random graphs.",
+    },
+    {
+        "title": "P2P Gnutella04 Network",
+        "graph": G4,
+        "measure_caption": "There is a correlation but with more scatter than the synthetic graphs.",
+        "network_caption": "A BFS subgraph of 1000 nodes from the largest connected component. Most nodes are small and blue with a few orange nodes scattered in the center. The network has many leaf nodes with low degree and low PageRank.",
+    },
+    {
+        "title": "P2P Gnutella09 Network",
+        "graph": G5,
+        "measure_caption": "Similar to Gnutella04 with a clear correlation.",
+        "network_caption": "Similar structure to Gnutella04. Orange nodes appear in the center surrounded by many blue nodes.",
+    },
+    {
+        "title": "Web Google Network",
+        "graph": G6,
+        "measure_caption": "The spread is wider here because in web graphs getting links from important pages matters more than just having many links.",
+        "network_caption": "A BFS subgraph of 1000 nodes. The one red node in the center is the most important page. Most of the network is blue, showing that only a small number of pages are really important in web graphs.",
+    },
 ]
+
 
 # measure plots
 if generate_measure_plots:
     for i, graph_info in enumerate(graph_infos):
         graph = graph_info["graph"]
         title = graph_info["title"]
+        caption = (
+            "The plot shows PageRank (x) against normalized degree centrality (y) for each node. "
+            + graph_info["measure_caption"]
+        )
 
         pr_score = list(nx.pagerank(graph).values())
 
@@ -36,16 +71,20 @@ if generate_measure_plots:
         else:
             degc = list(nx.degree_centrality(graph).values())
 
-        plt.figure(figsize=(8, 6), dpi=300)
+        plt.figure(figsize=(10, 8), dpi=300)
         plt.scatter(pr_score, degc)
-        plt.xlabel("PageRank")
-        plt.ylabel("Normalized Degree Centrality")
+        plt.xlabel("PageRank", fontsize=18)
+        plt.ylabel("Normalized Degree Centrality", fontsize=18)
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
         plt.ticklabel_format(axis="x", style="sci", scilimits=(0, 0))
         plt.title(
-            f"Measure Plot {i + 1}: Comparing PageRank vs Normalized Degree Centrality\n{title}"
+            f"Figure 1{chr(ord('a') + i)}: PageRank vs Normalized Degree Centrality\n{title}",
+            fontsize=18,
         )
-        plt.savefig(f"measureplot_{i + 1}.png")
+
+        plt.figtext(0.5, 0, caption, ha="center", wrap=True, fontsize=12)
+
+        plt.savefig(f"figure-1{chr(ord('a') + i)}.png", dpi=300, bbox_inches="tight")
 
 # network plots
 if generate_network_plots:
@@ -53,6 +92,7 @@ if generate_network_plots:
         graph = graph_info["graph"]
         title = graph_info["title"]
         subtitle = ""
+        caption = graph_info["network_caption"]
 
         if graph.number_of_nodes() > 1000:
             component = max(nx.weakly_connected_components(graph), key=len)
@@ -79,10 +119,10 @@ if generate_network_plots:
             (deg - min_degree) / (max_degree - min_degree) * 300 + 20 for deg in degrees
         ]
 
-        plt.figure(figsize=(8, 6), dpi=300)
+        plt.figure(figsize=(10, 8), dpi=300)
         plt.title(
-            f"Network Plot {i + 1}: Network Visualization with PageRank and Degree\n{title} {subtitle}\nColor = PageRank | Size = Degree"
-        )
+            f"Figure 2{chr(ord('a') + i)}: Network Visualization with PageRank and Degree\n{title} {subtitle}\nColor = PageRank | Size = Degree"
+        , fontsize=18)
         nx.draw(
             graph,
             ax=plt.gca(),
@@ -96,4 +136,6 @@ if generate_network_plots:
         low_patch = mpatches.Patch(color="blue", label="Low")
         high_patch = mpatches.Patch(color="red", label="High")
         plt.legend(handles=[low_patch, high_patch], title="PageRank", loc="upper right")
-        plt.savefig(f"networkplot_{i + 1}.png")
+        plt.figtext(0.5, 0, caption, ha="center", wrap=True, fontsize=12)
+
+        plt.savefig(f"figure-2{chr(ord('a') + i)}.png", dpi=300, bbox_inches="tight")
