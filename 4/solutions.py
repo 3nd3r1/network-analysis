@@ -36,12 +36,11 @@ def balance_test(graph: nx.Graph) -> bool:
                 graph_supernodes.add_edge(i, node_component[edge[1]])
 
     # Perform BFS from some node if two nodes in the same layer are connected then return NO
-    for node in graph_supernodes.nodes():
-        for layer in nx.bfs_layers(graph_supernodes, node):
-            for i in range(0, len(layer)):
-                for j in range(i + 1, len(layer)):
-                    if graph_supernodes.has_edge(layer[i], layer[j]):
-                        return False
+    for layer in nx.bfs_layers(graph_supernodes, 0):
+        for i in range(0, len(layer)):
+            for j in range(i + 1, len(layer)):
+                if graph_supernodes.has_edge(layer[i], layer[j]):
+                    return False
 
     # Return YES
     return True
