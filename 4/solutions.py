@@ -9,16 +9,20 @@ def balance_test(graph: nx.Graph) -> bool:
         if edge[2]["sign"] == "+":
             graph_plus.add_edge(edge[0], edge[1])
 
-    components = nx.connected_components(graph_plus)
     graph_supernodes = nx.Graph()
+
     node_component = {}
-    for i, component in enumerate(components):
+    for i, component in enumerate(nx.connected_components(graph_plus)):
         graph_supernodes.add_node(i)
         for node in component:
             node_component[node] = i
-            for edge in graph.edges(node, data=True):
-                if edge[1] in component and edge[2]["sign"] == "-":
-                    return False
+
+    for edge in graph.edges(data=True):
+        if (
+            node_component[edge[0]] == node_component[edge[1]]
+            and edge[2]["sign"] == "-"
+        ):
+            return False
 
     for node, i in node_component.items():
         for edge in graph.edges(node):
