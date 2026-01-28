@@ -81,7 +81,7 @@ def balance_test(graph: nx.Graph) -> bool:
             and edge[2]["sign"] == "-"
         ):
             cycle = nx.shortest_path(graph_plus, edge[0], edge[1]) + [edge[0]]
-            print(f"The graph is not balanced and the odd cycle is {cycle}")
+            print(f"The odd cycle is {cycle}")
             return False
 
     # Replace each group with one super node
@@ -116,10 +116,11 @@ def balance_test(graph: nx.Graph) -> bool:
                     cycle = build_the_odd_cycle(
                         graph_supernodes, layer[i], layer[j], graph
                     )
-                    print(f"The graph is not balanced and the odd cycle is {cycle}")
+                    print(f"The odd cycle is {cycle}")
                     return False
 
     # Return YES
+    print(f"The disjoint sets are: {disjoint_set_a} and {disjoint_set_b}")
     return True
 
 
@@ -137,8 +138,12 @@ graph_n2 = nx.read_edgelist(
 print("Graph N1:")
 if balance_test(graph_n1):
     print("The graph is balanced")
+else:
+    print("The graph is not balanced")
 print()
 
 print("Graph N2:")
 if balance_test(graph_n2):
     print("The graph is balanced")
+else:
+    print("The graph is not balanced")
