@@ -2,6 +2,62 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 
+def draw_supernodes_graph(graph: nx.Graph, node_component: dict) -> None:
+    pos = nx.bfs_layout(graph, 0)
+    nx.draw(graph, pos)
+    node_labels = {
+        n: f"{n}\n{str([node for node, supernode in node_component.items() if supernode == n])}"
+        for n in graph.nodes()
+    }
+    nx.draw_networkx_labels(graph, pos, labels=node_labels)
+    edge_labels = {
+        (u, v): f"{d['node_a']} to {d['node_b']}" for u, v, d in graph.edges(data=True)
+    }
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
+    plt.show()
+
+
+def build_the_odd_cycle(
+    graph_supernodes: nx.Graph,
+    node_i: int,
+    node_j: int,
+    graph: nx.Graph,
+) -> list[int]:
+    """
+    Basically we get the BFS paths from the 0 supernode to the two
+    supernodes that have an edge in the same layer.
+    Then we get the actual nodes from the original graph and build the cycle.
+    """
+    supernode_bfs_tree = nx.bfs_tree(graph_supernodes, 0)
+
+    path_i = nx.shortest_path(supernode_bfs_tree, 0, node_i)
+    path_j = nx.shortest_path(supernode_bfs_tree, 0, node_j)
+    actual_path_i = []
+    actual_path_j = []
+
+    for k in range(1, len(path_i)):
+        actual_path_i.append(graph_supernodes[path_i[k - 1]][path_i[k]]["node_a"])
+        actual_path_i.append(graph_supernodes[path_i[k - 1]][path_i[k]]["node_b"])
+    for k in range(1, len(path_j)):
+        actual_path_j.append(graph_supernodes[path_j[k - 1]][path_j[k]]["node_a"])
+        actual_path_j.append(graph_supernodes[path_j[k - 1]][path_j[k]]["node_b"])
+
+    actual_path = actual_path_i + list(reversed(actual_path_j))
+    final_path = [actual_path[0]]
+    for k in range(1, len(actual_path)):
+        if actual_path[k] == final_path[-1]:
+            continue
+        elif not graph.has_edge(final_path[-1], actual_path[k]):
+            final_path.extend(
+                nx.shortest_path(graph, final_path[-1], actual_path[k])[1:]
+            )
+        else:
+            final_path.append(actual_path[k])
+
+    final_path.append(final_path[0])
+    return final_path
+
+
 def balance_test(graph: nx.Graph) -> bool:
     graph_plus = nx.Graph()
     for node in graph.nodes():
@@ -17,7 +73,6 @@ def balance_test(graph: nx.Graph) -> bool:
         num_components += 1
         for node in component:
             node_component[node] = i
-    print(node_component)
 
     # If there is a - edge within a group return NO
     for edge in graph.edges(data=True):
@@ -45,7 +100,6 @@ def balance_test(graph: nx.Graph) -> bool:
     # We start the bfs from node 0. We assume that the supernodes are all connected.
     disjoint_set_a = set()
     disjoint_set_b = set()
-    tree = nx.bfs_tree(graph_supernodes, 0)
 
     for i, layer in enumerate(nx.bfs_layers(graph_supernodes, 0)):
         for supernode in layer:
@@ -59,38 +113,10 @@ def balance_test(graph: nx.Graph) -> bool:
         for i in range(0, len(layer)):
             for j in range(i + 1, len(layer)):
                 if graph_supernodes.has_edge(layer[i], layer[j]):
-                    pos = nx.bfs_layout(graph_supernodes, 0)
-                    nx.draw(graph_supernodes, pos, with_labels=True)
-                    plt.show()
-                    path_left = nx.shortest_path(tree, 0, layer[i])
-                    path_right = nx.shortest_path(tree, 0, layer[j])
-                    print(path_left)
-                    print(path_right)
-                    actual_path_left = []
-                    actual_path_right = []
-                    for i in range(1, len(path_left) - 1):
-                        node_left = graph_supernodes[path_left[i - 1]][path_left[i]][
-                            "node_b"
-                        ]
-                        node_right = graph_supernodes[path_left[i]][path_left[i + 1]][
-                            "node_a"
-                        ]
-                        actual_path_left.extend(
-                            nx.shortest_path(graph, node_left, node_right)
-                        )
-                    for i in range(1, len(path_right) - 1):
-                        node_left = graph_supernodes[path_right[i - 1]][path_right[i]][
-                            "node_b"
-                        ]
-                        node_right = graph_supernodes[path_right[i]][path_right[i + 1]][
-                            "node_a"
-                        ]
-                        actual_path_right.extend(
-                            nx.shortest_path(graph, node_left, node_right)
-                        )
-                    print(actual_path_left)
-                    print(actual_path_right)
-
+                    cycle = build_the_odd_cycle(
+                        graph_supernodes, layer[i], layer[j], graph
+                    )
+                    print(f"The graph is not balanced and the odd cycle is {cycle}")
                     return False
 
     # Return YES
@@ -108,5 +134,11 @@ graph_n2 = nx.read_edgelist(
     data=[("sign", str)],  # type: ignore
 )
 
-print(balance_test(graph_n1))
-print(balance_test(graph_n2))
+print("Graph N1:")
+if balance_test(graph_n1):
+    print("The graph is balanced")
+print()
+
+print("Graph N2:")
+if balance_test(graph_n2):
+    print("The graph is balanced")
