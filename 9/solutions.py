@@ -7,11 +7,14 @@ import networkx as nx
 def get_edges_with_highest_betweennes(graph: nx.Graph) -> List[Tuple[int, int]]:
     betweennes_dict = {}
     max_betweennes = 0
-    for node_a in graph.nodes():
-        for node_b in graph.nodes():
-            if node_a == node_b:
+    for i in range(0, graph.number_of_nodes()):
+        for j in range(i + 1, graph.number_of_nodes()):
+            node_a = list(graph.nodes())[i]
+            node_b = list(graph.nodes())[j]
+            try:
+                paths = list(nx.all_shortest_paths(graph, node_a, node_b))
+            except nx.NetworkXNoPath:
                 continue
-            paths = list(nx.all_shortest_paths(graph, node_a, node_b))
             for path in paths:
                 for edge in zip(path, path[1:]):
                     edge = tuple(sorted(edge))
@@ -27,9 +30,15 @@ def get_edges_with_highest_betweennes(graph: nx.Graph) -> List[Tuple[int, int]]:
 
 
 graph = nx.read_edgelist("graph.edgelist", nodetype=str)
+pos = nx.spring_layout(graph)
 
-for _ in range(5):
-    nx.draw(graph, with_labels=True)
-    plt.show()
+for i in range(1, 6):
     edges_to_remove = get_edges_with_highest_betweennes(graph)
     graph.remove_edges_from(edges_to_remove)
+
+    print(f"Step {i}")
+    partitions = list(nx.connected_components(graph))
+
+    print(partitions)
+    nx.draw(graph, with_labels=True, pos=pos)
+    plt.show()
