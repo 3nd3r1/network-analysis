@@ -30,7 +30,10 @@ def get_edges_with_highest_betweennes(graph: nx.Graph) -> List[Tuple[int, int]]:
 
 
 graph = nx.read_edgelist("graph.edgelist", nodetype=str)
-pos = nx.spring_layout(graph)
+pos = nx.spring_layout(graph, seed=123)
+
+fig, _ = plt.subplots(2, 3, figsize=(16, 12))
+fig.subplots_adjust(hspace=0.3, wspace=0.2, top=0.92)
 
 for i in range(1, 6):
     edges_to_remove = get_edges_with_highest_betweennes(graph)
@@ -40,18 +43,13 @@ for i in range(1, 6):
 
     removed_str = ", ".join([f"({a}, {b})" for a, b in edges_to_remove])
     partition_str = str(partitions)
-
     print(f"Step {i}: {partition_str}")
 
-    plt.figure(figsize=(10, 8), dpi=300)
-    nx.draw(graph, with_labels=True, pos=pos, font_size=18, node_size=800)
-    plt.title(f"Girvan-Newman: Step {i}", fontsize=20)
-    plt.figtext(
-        0.5,
-        -0.05,
-        f"Removed edges: {removed_str}\nPartitions: {partition_str}",
-        ha="center",
-        fontsize=14,
-        wrap=True,
-    )
-    plt.savefig(f"figure-{i}.png", dpi=300, bbox_inches="tight")
+    plt.subplot(2, 3, i)
+    nx.draw(graph, with_labels=True, pos=pos, font_size=14, node_size=600)
+    plt.title(f"Step {i}", fontsize=14, wrap=True)
+
+plt.subplot(2, 3, 6)
+plt.axis("off")
+plt.suptitle("Girvan-Newman Algorithm", fontsize=18)
+plt.savefig("figure-1.png", dpi=300, bbox_inches="tight")
