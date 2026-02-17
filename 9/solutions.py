@@ -36,9 +36,22 @@ for i in range(1, 6):
     edges_to_remove = get_edges_with_highest_betweennes(graph)
     graph.remove_edges_from(edges_to_remove)
 
-    print(f"Step {i}")
     partitions = list(nx.connected_components(graph))
 
-    print(partitions)
-    nx.draw(graph, with_labels=True, pos=pos)
-    plt.show()
+    removed_str = ", ".join([f"({a}, {b})" for a, b in edges_to_remove])
+    partition_str = str(partitions)
+
+    print(f"Step {i}: {partition_str}")
+
+    plt.figure(figsize=(10, 8), dpi=300)
+    nx.draw(graph, with_labels=True, pos=pos, font_size=18, node_size=800)
+    plt.title(f"Girvan-Newman: Step {i}", fontsize=20)
+    plt.figtext(
+        0.5,
+        -0.05,
+        f"Removed edges: {removed_str}\nPartitions: {partition_str}",
+        ha="center",
+        fontsize=14,
+        wrap=True,
+    )
+    plt.savefig(f"figure-{i}.png", dpi=300, bbox_inches="tight")
