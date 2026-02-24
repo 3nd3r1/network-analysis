@@ -5,8 +5,10 @@ import numpy as np
 from scipy.sparse.linalg import eigsh
 
 
+colors = ["red", "blue", "green", "yellow"]
+
+
 def do_part_1(i, X, Y, u2, u3):
-    colors = ["red", "blue", "green", "yellow"]
     caption_generic = "Scatter plot of node attributes (X) and spectral embedding (u2,u3). Points colored by node label (Y)."
     captions = {
         1: f"{caption_generic}\nThe node attributes separate the nodes into 4 groups but all node labels overlap.\nThe spectral embedding also fails to separate labels with most nodes clustered.",
@@ -43,11 +45,11 @@ def do_part_1(i, X, Y, u2, u3):
     plt.close()
 
 
-def do_part_2(i, A):
+def do_part_2(i, A, Y):
     captions = {
-        1: "The spectral layout shows 4 groups with some outliers, while the spring layout shows no groups.",
-        2: "The spectral layout shows 4 groups with outliers, while the spring layout shows no groups.",
-        3: "The spectral layout shows 4 groups with a small amount of outliers, while the spring layout shows no groups.",
+        1: "Network 1 visualized using spectral and spring layouts.\n The spectral layout  separates nodes into 4 distinct groups and the node colors show these match the node label (Y).\n The spring layout does not separate nodes, but we can see that the node labels are clearly separate.",
+        2: "Network 2 visualized using spectral and spring layouts.\n The spectral layout separates nodes into 4 groups, but labels {0,1} and {2,3} overlap in the bottom-left and upper-right corners respectively.\n The spring layout does not separate nodes, but we can see a left-right split between labels {2,3} and {0,1}.",
+        3: "Network 3 visualized using spectral and spring layouts.\n The spectral layout separates nodes into 4 regions, but the node labels are completely mixed.\n The spring layout does not separate nodes and shows no clear node label grouping.",
     }
 
     graph = nx.from_numpy_array(A)
@@ -58,12 +60,34 @@ def do_part_2(i, A):
     plt.suptitle(f"Figure 2{chr(ord('a') + i - 1)}: Network {i}", fontsize=24)
 
     plt.subplot(1, 2, 1)
-    nx.draw(graph, pos=pos_spectral, node_size=50, width=0.1, edge_color="gray")
+    nx.draw(
+        graph,
+        pos=pos_spectral,
+        node_size=50,
+        width=0.1,
+        edge_color="gray",
+        node_color=[colors[y] for y in Y],
+    )
+    plt.legend(
+        handles=[mpatches.Patch(color=colors[c], label=f"Y = {c}") for c in range(4)],
+        fontsize=14,
+    )
     plt.title("Spectral Layout", fontsize=20)
 
     plt.subplot(1, 2, 2)
-    nx.draw(graph, pos=pos_spring, node_size=50, width=0.1, edge_color="gray")
+    nx.draw(
+        graph,
+        pos=pos_spring,
+        node_size=50,
+        width=0.1,
+        edge_color="gray",
+        node_color=[colors[y] for y in Y],
+    )
     plt.title("Spring Layout", fontsize=20)
+    plt.legend(
+        handles=[mpatches.Patch(color=colors[c], label=f"Y = {c}") for c in range(4)],
+        fontsize=14,
+    )
 
     plt.figtext(0.5, -0.02, captions[i], ha="center", fontsize=18, wrap=True)
     plt.tight_layout()
@@ -83,4 +107,4 @@ for i in range(1, 4):
     w2, w3 = w[1], w[2]  # Laplacian eigenvalues w2, w3
 
     do_part_1(i, X, Y, u2, u3)
-    do_part_2(i, A)
+    do_part_2(i, A, Y)
