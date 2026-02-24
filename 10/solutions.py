@@ -1,10 +1,11 @@
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
 from scipy.sparse.linalg import eigsh
 
 
-def create_figures_1(X, Y, u2, u3):
+def do_part_1(X, Y, u2, u3):
     colors = ["red", "blue", "green", "yellow"]
     caption_generic = "Scatter plot of node attributes (X) and spectral embedding (u2,u3). Points colored by node label (Y)."
     captions = {
@@ -42,6 +43,11 @@ def create_figures_1(X, Y, u2, u3):
     plt.close()
 
 
+def do_part_2(A):
+    graph = nx.from_numpy_matrix(A)
+    print(graph)
+
+
 for i in range(1, 4):
     A = np.load(f"./data/network_{i}_A.pkl", allow_pickle=True).astype("float")
     A = A - np.eye(A.shape[0])
@@ -53,4 +59,5 @@ for i in range(1, 4):
     u2, u3 = u.T[1], u.T[2]  # Laplacian eigenvector u2, u3
     w2, w3 = w[1], w[2]  # Laplacian eigenvalues w2, w3
 
-    create_figures_1(X, Y, u2, u3)
+    do_part_1(X, Y, u2, u3)
+    do_part_2(A)
