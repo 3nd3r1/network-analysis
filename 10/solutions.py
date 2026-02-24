@@ -5,7 +5,7 @@ import numpy as np
 from scipy.sparse.linalg import eigsh
 
 
-def do_part_1(X, Y, u2, u3):
+def do_part_1(i, X, Y, u2, u3):
     colors = ["red", "blue", "green", "yellow"]
     caption_generic = "Scatter plot of node attributes (X) and spectral embedding (u2,u3). Points colored by node label (Y)."
     captions = {
@@ -14,7 +14,7 @@ def do_part_1(X, Y, u2, u3):
         3: f"{caption_generic}\nThe node attributes separate the labels perfectly into 4 groups.\nThe spectral embedding does not, everything is still clustered.",
     }
     plt.subplots(1, 2, figsize=(16, 7))
-    plt.suptitle(f"Figure 1{chr(ord('a') + i)}: Network {i}", fontsize=20)
+    plt.suptitle(f"Figure 1{chr(ord('a') + i - 1)}: Network {i}", fontsize=20)
 
     plt.subplot(1, 2, 1)
     plt.scatter(x=[x[0] for x in X], y=[x[1] for x in X], c=[colors[y] for y in Y])
@@ -39,13 +39,15 @@ def do_part_1(X, Y, u2, u3):
     plt.figtext(0.5, -0.1, captions[i], ha="center", fontsize=14, wrap=True)
 
     plt.tight_layout()
-    plt.savefig(f"figure-1{chr(ord('a') + i)}.png", dpi=300, bbox_inches="tight")
+    plt.savefig(f"figure-1{chr(ord('a') + i - 1)}.png", dpi=300, bbox_inches="tight")
     plt.close()
 
 
-def do_part_2(A):
-    graph = nx.from_numpy_matrix(A)
+def do_part_2(i, A):
+    graph = nx.from_numpy_array(A)
     print(graph)
+    plt.subplots(1, 2, figsize=(16, 7))
+    plt.suptitle(f"Figure 2{chr(ord('a') + i)}: Network {i}", fontsize=20)
 
 
 for i in range(1, 4):
@@ -59,5 +61,5 @@ for i in range(1, 4):
     u2, u3 = u.T[1], u.T[2]  # Laplacian eigenvector u2, u3
     w2, w3 = w[1], w[2]  # Laplacian eigenvalues w2, w3
 
-    do_part_1(X, Y, u2, u3)
-    do_part_2(A)
+    do_part_1(i, X, Y, u2, u3)
+    do_part_2(i, A)
