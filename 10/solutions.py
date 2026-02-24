@@ -4,27 +4,16 @@ import numpy as np
 from scipy.sparse.linalg import eigsh
 
 
-colors = ["red", "blue", "green", "yellow"]
-caption_generic = "Scatter plot of node attributes (X) and spectral embedding (u2,u3). Points colored by node label (Y)."
-captions = {
-    1: f"{caption_generic}\nThe node attributes separate the nodes into 4 groups but all node labels overlap.\nThe spectral embedding also fails to separate labels with most nodes clustered.",
-    2: f"{caption_generic}\nThe node attributes almost separate the labels. Label 0 and 2 are grouped to the left and labels 1 and 3 on the right.\n But the two labels overlap inside the groups.\nThe spectral embedding does nothing with most nodes clustered very closely.",
-    3: f"{caption_generic}\nThe node attributes separate the labels perfectly into 4 groups.\nThe spectral embedding does not, everything is still clustered.",
-}
-
-for i in range(1, 4):
-    A = np.load(f"./data/network_{i}_A.pkl", allow_pickle=True).astype("float")
-    A = A - np.eye(A.shape[0])
-    X = np.load(f"./data/network_{i}_X.pkl", allow_pickle=True).astype("float")
-    Y = np.load(f"./data/network_{i}_Y.pkl", allow_pickle=True).astype(int)
-    D = np.diag(A.sum(axis=1))
-    L = D - A
-    w, u = eigsh(L, k=3)
-    u2, u3 = u.T[1], u.T[2]  # Laplacian eigenvector u2, u3
-    w2, w3 = w[1], w[2]  # Laplacian eigenvalues w2, w3
-
+def create_figures_1(X, Y, u2, u3):
+    colors = ["red", "blue", "green", "yellow"]
+    caption_generic = "Scatter plot of node attributes (X) and spectral embedding (u2,u3). Points colored by node label (Y)."
+    captions = {
+        1: f"{caption_generic}\nThe node attributes separate the nodes into 4 groups but all node labels overlap.\nThe spectral embedding also fails to separate labels with most nodes clustered.",
+        2: f"{caption_generic}\nThe node attributes almost separate the labels. Label 0 and 2 are grouped to the left and labels 1 and 3 on the right.\n But the two labels overlap inside the groups.\nThe spectral embedding does nothing with most nodes clustered very closely.",
+        3: f"{caption_generic}\nThe node attributes separate the labels perfectly into 4 groups.\nThe spectral embedding does not, everything is still clustered.",
+    }
     plt.subplots(1, 2, figsize=(16, 7))
-    plt.suptitle(f"Figure {i}: Network {i}", fontsize=20)
+    plt.suptitle(f"Figure 1{chr(ord('a') + i)}: Network {i}", fontsize=20)
 
     plt.subplot(1, 2, 1)
     plt.scatter(x=[x[0] for x in X], y=[x[1] for x in X], c=[colors[y] for y in Y])
@@ -49,5 +38,19 @@ for i in range(1, 4):
     plt.figtext(0.5, -0.1, captions[i], ha="center", fontsize=14, wrap=True)
 
     plt.tight_layout()
-    plt.savefig(f"figure-{i}.png", dpi=300, bbox_inches="tight")
+    plt.savefig(f"figure-1{chr(ord('a') + i)}.png", dpi=300, bbox_inches="tight")
     plt.close()
+
+
+for i in range(1, 4):
+    A = np.load(f"./data/network_{i}_A.pkl", allow_pickle=True).astype("float")
+    A = A - np.eye(A.shape[0])
+    X = np.load(f"./data/network_{i}_X.pkl", allow_pickle=True).astype("float")
+    Y = np.load(f"./data/network_{i}_Y.pkl", allow_pickle=True).astype(int)
+    D = np.diag(A.sum(axis=1))
+    L = D - A
+    w, u = eigsh(L, k=3)
+    u2, u3 = u.T[1], u.T[2]  # Laplacian eigenvector u2, u3
+    w2, w3 = w[1], w[2]  # Laplacian eigenvalues w2, w3
+
+    create_figures_1(X, Y, u2, u3)
