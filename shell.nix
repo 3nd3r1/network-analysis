@@ -1,4 +1,6 @@
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 
 pkgs.mkShell {
   buildInputs = with pkgs; [
@@ -8,6 +10,7 @@ pkgs.mkShell {
     python3Packages.numpy
     python3Packages.networkx
     python3Packages.scipy
+    python3Packages.scikit-learn
 
     p7zip
     zip
