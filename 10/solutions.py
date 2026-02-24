@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from scipy.sparse.linalg import eigsh
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 
 colors = ["red", "blue", "green", "yellow"]
@@ -95,6 +98,51 @@ def do_part_2(i, A, Y):
     plt.close()
 
 
+def do_part_3(i, X, Y, u2, u3):
+    captions = {
+        1: "All feature sets perform poorly (less than 0.40 accuracy).\n The spectral embedding (u2, u3) slightly outperforms X alone, but no feature set is effective for label prediction.",
+        2: "(X, u2, u3) achieves the best accuracy (0.58) outperforming X and [u2,u3] alone.\n This shows that node attributes and network structure combined are able to accurately predict Y.",
+        3: "X alone achieves perfect accuracy and adding U does not improve it.\n Spectral embedding alone is very unaccurate, confirming that network structure alone is not enough.",
+    }
+    features_list = [
+        u2.reshape(-1, 1),
+        u3.reshape(-1, 1),
+        np.column_stack([u2, u3]),
+        X,
+        np.hstack([X, np.column_stack([u2, u3])]),
+    ]
+
+    labels = ["[u2]", "[u3]", "[u2, u3]", "X", "[X, u2, u3]"]
+    accuracies = []
+
+    for features in features_list:
+        x_train, x_test, y_train, y_test = train_test_split(
+            features, Y, test_size=0.2, random_state=123
+        )
+        model = RandomForestClassifier(random_state=123)
+        model.fit(x_train, y_train)
+        y_prediction = model.predict(x_test)
+        accuracies.append(accuracy_score(y_test, y_prediction))
+
+    plt.figure(figsize=(12, 7))
+
+    plt.bar(labels, accuracies)
+    plt.ylabel("Accuracy", fontsize=18)
+    plt.xlabel("Features", fontsize=18)
+    plt.title(
+        f"Figure 3{chr(ord('a') + i - 1)}: Random Forest Accuracy with Network {i}",
+        fontsize=18,
+    )
+    plt.ylim(0, 1)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+
+    plt.figtext(0.5, 0.05, captions[i], ha="center", fontsize=14, wrap=True)
+    plt.tight_layout(rect=[0, 0.10, 1, 1]) # type: ignore
+    plt.savefig(f"figure-3{chr(ord('a') + i - 1)}.png", dpi=300)
+    plt.close()
+
+
 for i in range(1, 4):
     A = np.load(f"./data/network_{i}_A.pkl", allow_pickle=True).astype("float")
     A = A - np.eye(A.shape[0])
@@ -106,5 +154,6 @@ for i in range(1, 4):
     u2, u3 = u.T[1], u.T[2]  # Laplacian eigenvector u2, u3
     w2, w3 = w[1], w[2]  # Laplacian eigenvalues w2, w3
 
-    do_part_1(i, X, Y, u2, u3)
-    do_part_2(i, A, Y)
+    # do_part_1(i, X, Y, u2, u3)
+    # do_part_2(i, A, Y)
+    do_part_3(i, X, Y, u2, u3)
