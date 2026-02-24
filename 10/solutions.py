@@ -44,10 +44,31 @@ def do_part_1(i, X, Y, u2, u3):
 
 
 def do_part_2(i, A):
+    captions = {
+        1: "The spectral layout shows 4 groups with some outliers, while the spring layout shows no groups.",
+        2: "The spectral layout shows 4 groups with outliers, while the spring layout shows no groups.",
+        3: "The spectral layout shows 4 groups with a small amount of outliers, while the spring layout shows no groups.",
+    }
+
     graph = nx.from_numpy_array(A)
-    print(graph)
-    plt.subplots(1, 2, figsize=(16, 7))
-    plt.suptitle(f"Figure 2{chr(ord('a') + i)}: Network {i}", fontsize=20)
+    pos_spectral = nx.spectral_layout(graph)
+    pos_spring = nx.spring_layout(graph, seed=123)
+
+    plt.subplots(1, 2, figsize=(20, 9))
+    plt.suptitle(f"Figure 2{chr(ord('a') + i - 1)}: Network {i}", fontsize=24)
+
+    plt.subplot(1, 2, 1)
+    nx.draw(graph, pos=pos_spectral, node_size=50, width=0.1, edge_color="gray")
+    plt.title("Spectral Layout", fontsize=20)
+
+    plt.subplot(1, 2, 2)
+    nx.draw(graph, pos=pos_spring, node_size=50, width=0.1, edge_color="gray")
+    plt.title("Spring Layout", fontsize=20)
+
+    plt.figtext(0.5, -0.02, captions[i], ha="center", fontsize=18, wrap=True)
+    plt.tight_layout()
+    plt.savefig(f"figure-2{chr(ord('a') + i - 1)}.png", dpi=300, bbox_inches="tight")
+    plt.close()
 
 
 for i in range(1, 4):
