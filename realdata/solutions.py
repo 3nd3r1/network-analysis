@@ -12,6 +12,9 @@ def print_structure(graph):
     print(
         f"The network has {nx.number_connected_components(graph)} connected components"
     )
+    print(
+        f"The size of the largest connected component is: {len(max(nx.connected_components(graph), key=len))}"
+    )
     print(f"Network density: {nx.density(graph)}")
     degrees = [d[1] for d in nx.degree(graph)]
     print(f"Min degree: {min(degrees)}")
@@ -60,12 +63,14 @@ def do_q1():
 
 
 def print_top_centrality_nodes(graph, allowed_nodes):
-    degree_centrality_top_5 = sorted(
+    top = {}
+
+    top["Degree Centrality"] = sorted(
         [n for n in nx.degree_centrality(graph).items() if n[0] in allowed_nodes],
         key=lambda x: x[1],
         reverse=True,
     )[:5]
-    betweenness_centrality_top_5 = sorted(
+    top["Betweenness Centrality"] = sorted(
         [
             n
             for n in nx.betweenness_centrality(
@@ -76,28 +81,25 @@ def print_top_centrality_nodes(graph, allowed_nodes):
         key=lambda x: x[1],
         reverse=True,
     )[:5]
-    closeness_centrality_top_5 = sorted(
+    top["Closeness Centrality"] = sorted(
         [n for n in nx.closeness_centrality(graph).items() if n[0] in allowed_nodes],
         key=lambda x: x[1],
         reverse=True,
     )[:5]
-    pagerank_centrality_top_5 = sorted(
+    top["Pagerank Centrality"] = sorted(
         [n for n in nx.pagerank(graph).items() if n[0] in allowed_nodes],
         key=lambda x: x[1],
         reverse=True,
     )[:5]
-    print("Top 5 nodes by degree centrality:")
-    for node, centrality in degree_centrality_top_5:
-        print(f"{node}: {centrality}")
-    print("Top 5 nodes by betweenness centrality:")
-    for node, centrality in betweenness_centrality_top_5:
-        print(f"{node}: {centrality}")
-    print("Top 5 nodes by closeness centrality:")
-    for node, centrality in closeness_centrality_top_5:
-        print(f"{node}: {centrality}")
-    print("Top 5 nodes by pagerank centrality:")
-    for node, centrality in pagerank_centrality_top_5:
-        print(f"{node}: {centrality}")
+
+    print("| Rank | " + " | ".join(m for m in top.keys()) + " |")
+    print("|------|" + "|".join("---" for _ in top.keys()) + "|")
+    for i in range(5):
+        row = f"| {i + 1} |"
+        for m in top.keys():
+            name, val = top[m][i]
+            row += f" {name} : {val:.4f} |"
+        print(row)
 
 
 def do_q2():
@@ -151,6 +153,6 @@ with open("./data/coauthorship-conflicts-sigmod24.csv") as fp:
         )
     reviewers_graph = graph.subgraph(reviewers)
 
-    # do_q1()
-    # do_q2()
+    do_q1()
+    do_q2()
     do_q3()

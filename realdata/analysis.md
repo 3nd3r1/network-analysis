@@ -2,15 +2,16 @@
 
 ## Q1
 
-The main network has 10855 nodes and 14,854 edges.
-It is not connected and has 7 connected components.
-Only 7 components means that the network is almost connected.
+The full network has 10855 nodes and 14,854 edges.
+The network is not connected and has 7 connected components.
+The largest component contains 10764 nodes (99%) meaning that almost all nodes are reachable from each other.
 The network has a density of around 0.00025, meaning that the network is very sparse with many missing edges.
 The average degree is 2.7, the maximum is 453 and the minimum degree is 1.
 This means that few hub nodes are very connected while most nodes have very few connections.
 
 The reviewer subgraph has 244 nodes and 390 edges.
-It is also not connected but with 43 connected components. This means that many small components of reviewers exist that are not connected.
+It is less connected than the full network with 43 connected components.
+The largest component contains 193 nodes (79%).
 It is more dense than the main network with a density of around 0.013.
 The degree distribution is not as skewed as the main graph but still skewed with an average degree of 3.2, a max of 18 and a min of 0.
 Some reviewers are more connected than others.
@@ -33,6 +34,26 @@ H. V. Jagadish ranks first on all centrality measures making them the most centr
 His centrality values are higher than other non-reviewers especially in betweenness which suggests they are important in connecting different parts of the network.
 
 Overall, reviewers have much higher centrality values than non-reviewers which makes sense since reviewers are probably more experience and have more connections.
+
+Table 1: Top-5 central reviewers by degree, betweenness, closeness and PageRank centrality.
+
+| Rank | Degree Centrality     | Betweenness Centrality | Closeness Centrality   | Pagerank Centrality   |
+| ---- | --------------------- | ---------------------- | ---------------------- | --------------------- |
+| 1    | yifan li : 0.0417     | guoliang li : 0.0779   | guoliang li : 0.2960   | yifan li : 0.0179     |
+| 2    | jie song : 0.0339     | yifan li : 0.0755      | h. jagadish : 0.2856   | jie song : 0.0139     |
+| 3    | feifei li : 0.0263    | yuhao zhang : 0.0640   | feifei li : 0.2793     | yuhao zhang : 0.0100  |
+| 4    | bingsheng he : 0.0247 | gao cong : 0.0637      | nan tang : 0.2786      | bingsheng he : 0.0090 |
+| 5    | yuhao zhang : 0.0239  | feifei li : 0.0625     | xin luna dong : 0.2784 | hongzhi wang : 0.0078 |
+
+Table 2: Top-5 central non-reviewer authors by degree, betweenness, closeness and PageRank centrality.
+
+| Rank | Degree Centrality                    | Betweenness Centrality       | Closeness Centrality         | Pagerank Centrality                  |
+| ---- | ------------------------------------ | ---------------------------- | ---------------------------- | ------------------------------------ |
+| 1    | h. v. jagadish : 0.0019              | h. v. jagadish : 0.0268      | h. v. jagadish : 0.2839      | h. v. jagadish : 0.0005              |
+| 2    | tim kraska : 0.0018                  | tim kraska : 0.0256          | michael stonebraker : 0.2692 | tim kraska : 0.0004                  |
+| 3    | michael stonebraker : 0.0014         | michael stonebraker : 0.0148 | tim kraska : 0.2688          | michael stonebraker : 0.0003         |
+| 4    | saravanan thirumuruganathan : 0.0013 | reynold cheng : 0.0137       | gang chen 0001 : 0.2672      | saravanan thirumuruganathan : 0.0003 |
+| 5    | mourad ouzzani : 0.0011              | themis palpanas : 0.0130     | beng chin ooi : 0.2664       | themis palpanas : 0.0003             |
 
 ## Q3
 
