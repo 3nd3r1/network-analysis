@@ -14,5 +14,7 @@ pkgs.mkShell {
 
     p7zip
     zip
+    pandoc
+    texlive.combined.scheme-full
   ];
 }
