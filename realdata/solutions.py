@@ -110,9 +110,29 @@ def do_q2():
 
 
 def do_q3():
-    global graph, reviewers_graph
-    communities = louvain_communities(graph)
-    print(f"Communities: {len(communities)}")
+    global graph
+    communities = louvain_communities(graph, seed=123)
+    print(f"Number of communities: {len(communities)}")
+
+    community_sizes = sorted([len(com) for com in communities], reverse=True)
+
+    plt.subplots(figsize=(10, 6))
+    plt.bar(range(len(community_sizes)), community_sizes)
+    plt.xlabel("Community", fontsize=18)
+    plt.ylabel("Number of nodes", fontsize=18)
+    plt.title("Figure 2: Community Sizes Using Louvain", fontsize=20)
+    plt.tick_params(labelsize=14)
+
+    caption = "Figure 2 shows the sizes of the 49 communities detected by Louvain.\nThe community sizes decrease linearly with no big gaps.\nThis means that the network does not have strongly separated clusters."
+    plt.figtext(
+        0.5,
+        -0.1,
+        caption,
+        ha="center",
+        fontsize=14,
+    )
+
+    plt.savefig("figures/figure-2.png", dpi=300, bbox_inches="tight")
 
 
 graph = nx.Graph()
@@ -132,5 +152,5 @@ with open("./data/coauthorship-conflicts-sigmod24.csv") as fp:
     reviewers_graph = graph.subgraph(reviewers)
 
     # do_q1()
-    do_q2()
+    # do_q2()
     do_q3()

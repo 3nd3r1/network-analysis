@@ -32,3 +32,16 @@ H. V. Jagadish ranks first on all centrality measures making them the most centr
 His centrality values are higher than other non-reviewers especially in betweenness which suggests they are important in connecting different parts of the network.
 
 Overall, reviewers have much higher centrality values than non-reviewers which makes sense since reviewers are probably more experience and have more connections.
+
+## Q3
+
+To get communities I used the Louvain algorithm from the the Lecture 09b material. I also tried Girvan-Newman but it was too slow on the huge network.
+
+Louvain found 49 communities.
+We can see in Figure 2 that the community sizes decrease linearly from around 600 nodes in the largest community down to few nodes in the smallest.
+There is no clear gap between large and small communities.
+
+This means that there are no clearly distinguishable clusters in the network.
+If there was a strong community structure we would see separated large groups with gaps.
+
+![Figure 2](./figures/figure-2.png)
