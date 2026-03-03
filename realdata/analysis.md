@@ -1,4 +1,6 @@
-# Co-authorship Conflict Analysis
+# Co-authorship Conflict Network Analysis SIGMOD 2024
+
+Author: Viljami Ranta
 
 ## Q1
 
@@ -18,7 +20,7 @@ Some reviewers are more connected than others.
 
 Figure 1 shows the degree distributions for both networks.
 
-![Figure 1](./figures/figure-1.png)
+![The degree distributions for the main network and the reviewer sub-network. In both networks most nodes have only a few connections while a small number of nodes have more than average connections](./figures/figure-1.png)
 
 ## Q2
 
@@ -69,7 +71,7 @@ Because the between community edges are slightly stronger, the communities are n
 
 In summary, the network does not have clearly distinguishable clusters.
 
-![Figure 2](./figures/figure-2.png)
+![The sizes of the 49 communities detected by Louvain. The community sizes decrease linearly with no big gaps.](./figures/figure-2.png)
 
 ## Q4
 

@@ -45,9 +45,7 @@ def create_degree_histogram(grapha, graphb):
     plt.title("Reviewer Sub-network", fontsize=20)
     plt.tick_params(labelsize=14)
 
-    caption = "Figure 1 shows the degree distributions for the main network and the reviewer sub-network.\nIn both networks most nodes have only a few connections while a small number of nodes have more than average connections."
-    plt.figtext(0.5, 0.045, caption, ha="center", fontsize=14, wrap=True)
-    plt.tight_layout(rect=[0, 0.10, 1, 1])  # type: ignore
+    plt.tight_layout()
     plt.savefig("./figures/figure-1.png", dpi=300)
 
 
@@ -94,21 +92,12 @@ def print_top_centrality_nodes(graph, allowed_nodes):
 def create_community_bar(communities):
     community_sizes = sorted([len(com) for com in communities], reverse=True)
 
-    plt.subplots(figsize=(10, 6))
+    plt.figure(figsize=(16, 8))
     plt.bar(range(len(community_sizes)), community_sizes)
     plt.xlabel("Community", fontsize=18)
     plt.ylabel("Number of nodes", fontsize=18)
-    plt.title("Figure 2: Community Sizes Using Louvain", fontsize=20)
+    plt.title("Figure 2: Community Sizes Using Louvain", fontsize=22)
     plt.tick_params(labelsize=14)
-
-    caption = "Figure 2 shows the sizes of the 49 communities detected by Louvain.\nThe community sizes decrease linearly with no big gaps.\nThis means that the network does not have strongly separated clusters."
-    plt.figtext(
-        0.5,
-        -0.1,
-        caption,
-        ha="center",
-        fontsize=14,
-    )
 
     plt.savefig("figures/figure-2.png", dpi=300, bbox_inches="tight")
 
@@ -184,5 +173,5 @@ with open("./data/coauthorship-conflicts-sigmod24.csv") as fp:
     reviewers_graph = graph.subgraph(reviewers)
 
     do_q1()
-    do_q2()
+    # do_q2()
     do_q3()
