@@ -13,3 +13,7 @@ It is also not connected but with 43 connected components. This means that many 
 It is more dense than the main network with a density of around 0.013.
 The degree distribution is not as skewed as the main graph but still skewed with an average degree of 3.2, a max of 18 and a min of 0.
 Some reviewers are more connected than others.
+
+Figure 1 shows the degree distributions for both networks.
+
+![Figure 1](./figures/figure-1.png)
