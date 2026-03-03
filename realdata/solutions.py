@@ -51,17 +51,6 @@ def create_degree_histogram(grapha, graphb):
     plt.savefig("./figures/figure-1.png", dpi=300)
 
 
-def do_q1():
-    global graph, reviewers_graph
-    print("Main graph:")
-    print_structure(graph)
-    print()
-    print("Reviewer subgraph:")
-    print_structure(reviewers_graph)
-
-    create_degree_histogram(graph, reviewers_graph)
-
-
 def print_top_centrality_nodes(graph, allowed_nodes):
     top = {}
 
@@ -102,20 +91,7 @@ def print_top_centrality_nodes(graph, allowed_nodes):
         print(row)
 
 
-def do_q2():
-    global graph, reviewers
-    print("Top centrality of reviewers:")
-    print_top_centrality_nodes(graph, reviewers)
-    print()
-    print("Top centrality of non-reviewers:")
-    print_top_centrality_nodes(graph, [n for n in graph.nodes() if n not in reviewers])
-
-
-def do_q3():
-    global graph
-    communities = louvain_communities(graph, seed=123)
-    print(f"Number of communities: {len(communities)}")
-
+def create_community_bar(communities):
     community_sizes = sorted([len(com) for com in communities], reverse=True)
 
     plt.subplots(figsize=(10, 6))
@@ -135,6 +111,60 @@ def do_q3():
     )
 
     plt.savefig("figures/figure-2.png", dpi=300, bbox_inches="tight")
+
+
+def print_commnity_strength(graph, communities):
+    node_to_community = {}
+    for i, community in enumerate(communities):
+        for node in community:
+            node_to_community[node] = i
+
+    inside_strength = [
+        sum(d[1] for d in data["co_authorship"])
+        for a, b, data in graph.edges(data=True)
+        if node_to_community[a] == node_to_community[b]
+    ]
+    outside_strength = [
+        sum(d[1] for d in data["co_authorship"])
+        for a, b, data in graph.edges(data=True)
+        if node_to_community[a] != node_to_community[b]
+    ]
+
+    print(
+        f"Avg edge strength inside community: {sum(inside_strength) / len(inside_strength)}"
+    )
+    print(
+        f"Avg edge strength outside community: {sum(outside_strength) / len(outside_strength)}"
+    )
+
+
+def do_q1():
+    global graph, reviewers_graph
+    print("Main graph:")
+    print_structure(graph)
+    print()
+    print("Reviewer subgraph:")
+    print_structure(reviewers_graph)
+
+    create_degree_histogram(graph, reviewers_graph)
+
+
+def do_q2():
+    global graph, reviewers
+    print("Top centrality of reviewers:")
+    print_top_centrality_nodes(graph, reviewers)
+    print()
+    print("Top centrality of non-reviewers:")
+    print_top_centrality_nodes(graph, [n for n in graph.nodes() if n not in reviewers])
+
+
+def do_q3():
+    global graph
+    communities = louvain_communities(graph, seed=123)
+    print(f"Number of communities: {len(communities)}")
+
+    create_community_bar(communities)
+    print_commnity_strength(graph, communities)
 
 
 graph = nx.Graph()

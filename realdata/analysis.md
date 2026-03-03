@@ -63,8 +63,11 @@ Louvain found 49 communities.
 We can see in Figure 2 that the community sizes decrease linearly from around 600 nodes in the largest community down to few nodes in the smallest.
 There is no clear gap between large and small communities.
 
-This means that there are no clearly distinguishable clusters in the network.
-If there was a strong community structure we would see separated large groups with gaps.
+To understand the strength of communities, I compared the average number of co-authored papers between the authors inside and outside communities.
+The average inside communities is 2.23 while between communities it is 2.56.
+Because the between community edges are slightly stronger, the communities are not very strong or distinguishable.
+
+In summary, the network does not have clearly distinguishable clusters.
 
 ![Figure 2](./figures/figure-2.png)
 
