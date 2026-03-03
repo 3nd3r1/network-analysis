@@ -3,7 +3,8 @@
 ## Q1
 
 The main network has 10855 nodes and 14,854 edges.
-It is not connected and has 7 connected components. Only 7 components means that the network is almost connected.
+It is not connected and has 7 connected components.
+Only 7 components means that the network is almost connected.
 The network has a density of around 0.00025, meaning that the network is very sparse with many missing edges.
 The average degree is 2.7, the maximum is 453 and the minimum degree is 1.
 This means that few hub nodes are very connected while most nodes have very few connections.
@@ -45,3 +46,24 @@ This means that there are no clearly distinguishable clusters in the network.
 If there was a strong community structure we would see separated large groups with gaps.
 
 ![Figure 2](./figures/figure-2.png)
+
+## Q4
+
+The dataset only contains edges between pairs where at least one person is a reviewer.
+This affects all of our answers.
+
+For Q1, the network is much sparser than the full co-authorship network since many edges between non-reviewer authors exist but are not in the data.
+The 7 components might be connected with a missing edge.
+The degree of non-reviewer authors is also lower since we only see their connections to reviewers.
+The reviewer sub-network is probably less affected since edges between reviewers are in the data.
+
+For Q2, the centrality of non-reviewer authors is probably lower.
+The top non-reviewer centrality values were much lower than the top reviewers.
+Non-reviewer authors might have more connections which would increase their centrality.
+Reviewer centrality is also affected since missing edges could create more paths that would change betweenness and closeness.
+
+For Q3, the missing edges could merge some of the communities.
+The real community structure could look different with the complete data.
+
+In summary, all results are affected by the dataset limitation.
+The network is a reviewer-focused and the missing data makes it impossible to draw conclusions about the full co-authorship network.
