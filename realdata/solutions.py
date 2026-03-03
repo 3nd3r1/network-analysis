@@ -3,6 +3,7 @@ import csv
 
 import matplotlib.pyplot as plt
 import networkx as nx
+from networkx.algorithms.community import louvain_communities
 
 
 def print_structure(graph):
@@ -58,18 +59,69 @@ def do_q1():
     create_degree_histogram(graph, reviewers_graph)
 
 
+def print_top_centrality_nodes(graph, allowed_nodes):
+    degree_centrality_top_5 = sorted(
+        [n for n in nx.degree_centrality(graph).items() if n[0] in allowed_nodes],
+        key=lambda x: x[1],
+        reverse=True,
+    )[:5]
+    betweenness_centrality_top_5 = sorted(
+        [
+            n
+            for n in nx.betweenness_centrality(
+                graph, k=min(250, graph.number_of_nodes())
+            ).items()
+            if n[0] in allowed_nodes
+        ],
+        key=lambda x: x[1],
+        reverse=True,
+    )[:5]
+    closeness_centrality_top_5 = sorted(
+        [n for n in nx.closeness_centrality(graph).items() if n[0] in allowed_nodes],
+        key=lambda x: x[1],
+        reverse=True,
+    )[:5]
+    pagerank_centrality_top_5 = sorted(
+        [n for n in nx.pagerank(graph).items() if n[0] in allowed_nodes],
+        key=lambda x: x[1],
+        reverse=True,
+    )[:5]
+    print("Top 5 nodes by degree centrality:")
+    for node, centrality in degree_centrality_top_5:
+        print(f"{node}: {centrality}")
+    print("Top 5 nodes by betweenness centrality:")
+    for node, centrality in betweenness_centrality_top_5:
+        print(f"{node}: {centrality}")
+    print("Top 5 nodes by closeness centrality:")
+    for node, centrality in closeness_centrality_top_5:
+        print(f"{node}: {centrality}")
+    print("Top 5 nodes by pagerank centrality:")
+    for node, centrality in pagerank_centrality_top_5:
+        print(f"{node}: {centrality}")
+
+
 def do_q2():
+    global graph, reviewers
+    print("Top centrality of reviewers:")
+    print_top_centrality_nodes(graph, reviewers)
+    print()
+    print("Top centrality of non-reviewers:")
+    print_top_centrality_nodes(graph, [n for n in graph.nodes() if n not in reviewers])
+
+
+def do_q3():
     global graph, reviewers_graph
-    print(nx.degree_centrality(graph))
+    communities = louvain_communities(graph)
+    print(f"Communities: {len(communities)}")
 
 
 graph = nx.Graph()
 reviewers_graph = None
+reviewers = set()
 
 with open("./data/coauthorship-conflicts-sigmod24.csv") as fp:
     reader = csv.reader(fp)
     next(reader)
-    reviewers = set()
     for row in reader:
         author, reviewer, reviewer_dblp, co_authorship, _ = row
         reviewers.add(reviewer)
@@ -79,4 +131,6 @@ with open("./data/coauthorship-conflicts-sigmod24.csv") as fp:
         )
     reviewers_graph = graph.subgraph(reviewers)
 
-    do_q1()
+    # do_q1()
+    do_q2()
+    do_q3()

@@ -17,3 +17,18 @@ Some reviewers are more connected than others.
 Figure 1 shows the degree distributions for both networks.
 
 ![Figure 1](./figures/figure-1.png)
+
+## Q2
+
+To find the central nodes I checked all centralities covered in the course: degree , betweenness , closeness and PageRank.
+All centralities were computed on the main network and split into reviewers and non-reviewers.
+
+The most central reviewers in the network are Yifan Li, Jie Song, Feifei Li, Bingsheng He and Guoliang Li.
+Yifan Li is first in degree centrality and PageRank meaning that they have the most co-authors and the most influence.
+Guoliang Li ranks first in betweenness and closeness meaning that they are a bridge between different parts of the network and are on average closest to all other nodes.
+
+The most central non-reviewer authors are H. V. Jagadish, Tim Kraska and Michael Stonebraker.
+H. V. Jagadish ranks first on all centrality measures making them the most central non-reviewer in the network.
+His centrality values are higher than other non-reviewers especially in betweenness which suggests they are important in connecting different parts of the network.
+
+Overall, reviewers have much higher centrality values than non-reviewers which makes sense since reviewers are probably more experience and have more connections.
